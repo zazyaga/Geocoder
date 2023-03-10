@@ -18,18 +18,22 @@ public class TestController {
         this.service = service;
     }
 
-    ///tests/1?name=test
+    // GET /tests/1?name=test
+    // RES body
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public Test getTest(@PathVariable Integer id,
                         @RequestParam String name) {
         return service.build(id, name);
     }
 
+    // GET /tests/save?name=test
     @GetMapping(value = "/save", produces = APPLICATION_JSON_VALUE)
     public void save(@RequestParam String name) {
          service.save(name);
     }
 
+    // GET /tests/load/test
+    // RES body
     @GetMapping(value = "/load/{name}", produces = APPLICATION_JSON_VALUE)
     public Test load(@PathVariable String name) {
         return service.load(name);
