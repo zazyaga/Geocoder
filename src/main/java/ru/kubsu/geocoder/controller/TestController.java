@@ -10,6 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("tests")
 public class TestController {
+
     private TestService service;
 
     @Autowired
@@ -17,10 +18,11 @@ public class TestController {
         this.service = service;
     }
 
+    ///tests/1?name=test
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     public Test getTest(@PathVariable Integer id,
                         @RequestParam String name) {
-        return service.build(name);
+        return service.build(id, name);
     }
 
     @GetMapping(value = "/save", produces = APPLICATION_JSON_VALUE)

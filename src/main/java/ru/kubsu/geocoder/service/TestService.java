@@ -15,8 +15,9 @@ public class TestService {
         this.repository = repository;
     }
 
-    public Test build(String name) {
+    public Test build(Integer id, String name) {
         Test test = new Test();
+        test.setId(id);
         test.setName(name);
         return test;
     }
