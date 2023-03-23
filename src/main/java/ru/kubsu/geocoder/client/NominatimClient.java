@@ -16,4 +16,12 @@ public interface NominatimClient {
 
 //    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}", produces = "application/json")
 //    Post getPostById(@PathVariable("postId") Long postId);
+
+  @RequestMapping(method = RequestMethod.GET, value = "/reverse", produces = "application/json")
+  List<NominatimPlace> reverse(@RequestParam(value = "lat") String latitude,
+                               @RequestParam(value = "lon") String longitude,
+                               @RequestParam(value = "param") String format);
 }
+
+
+
