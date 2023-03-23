@@ -21,7 +21,7 @@ public interface NominatimClient {
   @RequestMapping(method = RequestMethod.GET, value = "/reverse", produces = "application/json")
   NominatimPlace reverse(@RequestParam(value = "lat") String latitude,
                                @RequestParam(value = "lon") String longitude,
-                               @RequestParam(value = "param") String format);
+                               @RequestParam(value = "format", defaultValue = "json") String format);
 }
 
 
