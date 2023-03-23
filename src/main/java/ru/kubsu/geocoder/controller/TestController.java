@@ -43,14 +43,16 @@ public class TestController {
 
 
     // curl "https://nominatim.openstreetmap.org/search?q=кубгу&format=json"
-    @GetMapping(value = "/status", produces = APPLICATION_JSON_VALUE)
-    public NominatimPlace status() {
+    // curl "http://localhost:8080/tests/search"
+    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+    public NominatimPlace search() {
         return nominatimClient.search("кубгу", "json").get(0);
     }
 
     // curl "https://nominatim.openstreetmap.org/reverse?lat=45.02036085&lon=39.03099994504268&format=json"
-    @GetMapping(value = "/coordinates", produces = APPLICATION_JSON_VALUE)
-    public NominatimPlace coordinates() {
-      return nominatimClient.reverse("45", "39", "json").get(0);
+    //
+    @GetMapping(value = "/reverse", produces = APPLICATION_JSON_VALUE)
+    public NominatimPlace reverse() {
+      return nominatimClient.reverse("45.02036085", "39.03099994504268&", "json");
     }
 }

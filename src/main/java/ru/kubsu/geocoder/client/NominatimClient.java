@@ -10,15 +10,16 @@ import java.util.List;
 
 @FeignClient(value = "nominatim", url = "https://nominatim.openstreetmap.org")
 public interface NominatimClient {
+
     @RequestMapping(method = RequestMethod.GET, value = "/search", produces = "application/json")
     List<NominatimPlace> search(@RequestParam(value = "q") String query,
-                                @RequestParam(value = "param") String format);
+                                @RequestParam(value = "format", defaultValue = "json") String format);
 
 //    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}", produces = "application/json")
 //    Post getPostById(@PathVariable("postId") Long postId);
 
   @RequestMapping(method = RequestMethod.GET, value = "/reverse", produces = "application/json")
-  List<NominatimPlace> reverse(@RequestParam(value = "lat") String latitude,
+  NominatimPlace reverse(@RequestParam(value = "lat") String latitude,
                                @RequestParam(value = "lon") String longitude,
                                @RequestParam(value = "param") String format);
 }
