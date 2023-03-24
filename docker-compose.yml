@@ -8,7 +8,13 @@ volumes:
 
 services:
   application:
-
+    image: geocoder:latest
+    container_name: geocoder
+    restart: unless-stopped
+    ports:
+      - '80:8080'
+    networks:
+      - overlay
 
   database:
     image: postgres:15
