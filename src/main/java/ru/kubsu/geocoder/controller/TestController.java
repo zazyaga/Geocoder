@@ -29,7 +29,7 @@ public class TestController {
         return service.build(id, name);
     }
 
-    //
+    //curl "http://localhost:8080/tests/save?name=hellllo"
     @GetMapping(value = "/save", produces = APPLICATION_JSON_VALUE)
     public void save(@RequestParam String name) {
          service.save(name);
@@ -53,6 +53,7 @@ public class TestController {
     // curl "http://localhost:8080/tests/reverse"
     @GetMapping(value = "/reverse", produces = APPLICATION_JSON_VALUE)
     public NominatimPlace reverse() {
-      return nominatimClient.reverse("45.02036085", "39.03099994504268", "json");
+      return nominatimClient.reverse("45.016739", "38.963627", "json");
     }
 }
+
