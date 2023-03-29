@@ -8,9 +8,14 @@ import ru.kubsu.geocoder.repository.AddressRepository;
 
 import java.util.Optional;
 
+/**
+ * @author Anastasia Zozulya
+ */
+
 @Service
 public class AddressService {
 
+    private static final String QUERY_FOR_REVERSE = null;
   private final NominatimClient nominatimClient;
   private final AddressRepository addressRepository;
 
@@ -21,17 +26,28 @@ public class AddressService {
     this.addressRepository = addressRepository;
   }
 
-  public Optional<Address> search(String address){
-    return addressRepository.findByAddress(address)
-            .or(() -> nominatimClient.search(address)
-                    .map(p -> addressRepository.save(Address.of(p))));
+  public Optional<Address> search(String query){
+    return addressRepository.findByAddress(query)
+            .or(() -> nominatimClient.search(query)
+                    .map(place -> addressRepository.save(Address.of(place, query))));
   }
 
 
-  public Optional<Address> reverse(Double latitude, Double longitude){
-    return addressRepository.findByLatitudeAndLongitude(latitude, longitude)
-            .or(() -> nominatimClient.reverse(latitude, longitude)
-                .or(() -> nominatimClient.reverse(latitude, longitude)
-                    .map(p -> addressRepository.save(Address.of(p)))));
+  public Optional<Address> reverse(final String latitude, final String longitude){
+      try{
+          final Double lat = Double.parseDouble(latitude);
+          final Double lon = Double.parseDouble(longitude);
+          return addressRepository
+              .findByLatitudeAndLongitude(lat, lon)
+              .or(() -> nominatimClient.reverse(latitude, longitude)
+                  .map(place -> addressRepository
+                      .findByLatitudeAndLongitude(place.latitude(), place.longitude())
+                      .orElseGet(() -> addressRepository.save(Address.of(place, QUERY_FOR_REVERSE)))
+                  )
+              );
+      } catch (Exception ex) {
+          return Optional.empty();
+      }
   }
+
 }

@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.kubsu.geocoder.model.Test;
 import ru.kubsu.geocoder.repository.TestRepository;
 
+/**
+ * @author Anastasia Zozulya
+ */
+
 @Service
 public class TestService {
 

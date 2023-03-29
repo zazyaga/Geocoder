@@ -25,12 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TestControllerTest {
 
     @LocalServerPort
-    Integer port;
+    private Integer port;
 
     @Autowired
-    TestRepository testRepository;
-
-    TestRestTemplate testRestTemplate = new TestRestTemplate();
+    private TestRepository testRepository;
+    private TestRestTemplate testRestTemplate = new TestRestTemplate();
 
     @BeforeAll
     static void beforeAll() {
@@ -50,12 +49,16 @@ class TestControllerTest {
         ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
                 getForEntity("http://localhost:" + port + "/tests/1?name=test",
                         ru.kubsu.geocoder.model.Test.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         final ru.kubsu.geocoder.model.Test body = response.getBody();
+        if (body == null) {
+            fail("Body is null");
+        }
         assertEquals(1, body.getId());
         assertEquals("test", body.getName());
-        assertEquals(null, body.getDone());
-        assertEquals(null, body.getMark());
+        assertNull(body.getDone());
+        assertNull(body.getMark());
 
         //assertEquals("{\"id\":1,\"name\":\"test\",\"done\":null,\"mark\":null}", body);
         //System.out.println(response.getBody());
@@ -85,18 +88,18 @@ class TestControllerTest {
   //for build 3
     @Test
     void integrationTestWhenIdIsString() {
-      ResponseEntity<RestApiError> response = testRestTemplate
+      ResponseEntity<Map<String, String>> response = testRestTemplate
               .exchange("http://localhost:" + port + "/tests/abc?name=test",
                       HttpMethod.GET,
                       null,
-                      RestApiError.class);
+                  new ParameterizedTypeReference<Map<String, String>>() {});
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        final RestApiError body = response.getBody();
-        assertEquals(400, body.getStatus());
-        assertEquals("Bad Request", body.getError());
-        assertEquals("/tests/abc", body.getPath());
+        final Map<String, String> body = response.getBody();
+        assertEquals(400, body.get("status"));
+        assertEquals("Bad Request", body.get("error"));
+        assertEquals("/tests/abc", body.get("path"));
     }
 
   //example test for working with repository

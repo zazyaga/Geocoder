@@ -6,8 +6,13 @@ import ru.kubsu.geocoder.model.Address;
 
 import java.util.Optional;
 
+/**
+ * @author Anastasia Zozulya
+ */
+
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Integer> {
-  Optional<Address> findByAddress(String address);
+    Optional<Address> findByAddress(String address);
     Optional<Address> findByLatitudeAndLongitude(Double latitude, Double longitude);
+    Optional<Address> findByQuery(String query);
 }

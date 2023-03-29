@@ -6,6 +6,10 @@ import ru.kubsu.geocoder.model.Test;
 
 import java.util.Optional;
 
+/**
+ * @author Anastasia Zozulya
+ */
+
 @Repository
 public interface TestRepository extends CrudRepository<Test, Integer> {
     Optional<Test> findByName(String name);

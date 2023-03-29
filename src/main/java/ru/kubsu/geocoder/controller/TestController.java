@@ -9,35 +9,36 @@ import ru.kubsu.geocoder.service.TestService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * @author Anastasia Zozulya
+ */
 @RestController
 @RequestMapping("tests")
 public class TestController {
 
     private TestService service;
-    private NominatimClient nominatimClient;
 
     @Autowired
-    public TestController(TestService service, NominatimClient nominatimClient) {
+    public TestController(TestService service) {
         this.service = service;
-        this.nominatimClient = nominatimClient;
     }
 
     ///tests/1?name=test
-    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public Test getTest(@PathVariable Integer id,
-                        @RequestParam String name) {
+    @GetMapping(value = "/check/{id}", produces = APPLICATION_JSON_VALUE)
+    public Test getTest(final @PathVariable("id") Integer id,
+                        final @RequestParam("name") String name) {
         return service.build(id, name);
     }
 
     //curl "http://localhost:8080/tests/save?name=hellllo"
-    @GetMapping(value = "/save", produces = APPLICATION_JSON_VALUE)
-    public void save(@RequestParam String name) {
+    @GetMapping(value = "/saveTest", produces = APPLICATION_JSON_VALUE)
+    public void save(final @RequestParam("name") String name) {
          service.save(name);
     }
 
     //
     @GetMapping(value = "/load/{name}", produces = APPLICATION_JSON_VALUE)
-    public Test load(@PathVariable String name) {
+    public Test load(final @PathVariable("name") String name) {
         return service.load(name);
     }
 

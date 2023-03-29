@@ -5,6 +5,9 @@ package ru.kubsu.geocoder.model;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * @author Anastasia Zozulya
+ */
 @Entity
 
 public class Test {

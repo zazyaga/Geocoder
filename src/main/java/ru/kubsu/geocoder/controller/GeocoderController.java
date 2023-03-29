@@ -7,30 +7,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.kubsu.geocoder.client.NominatimClient;
-import ru.kubsu.geocoder.dto.NominatimPlace;
 import ru.kubsu.geocoder.model.Address;
 import ru.kubsu.geocoder.service.AddressService;
-import ru.kubsu.geocoder.service.TestService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * @author Anastasia Zozulya
+ */
 @RestController
 @RequestMapping("geocoder")
 public class GeocoderController {
   private final AddressService addressService;
 
   @Autowired
-  public GeocoderController(NominatimClient nominatimClient, final AddressService addressService) {
+  public GeocoderController(final AddressService addressService) {
     this.addressService = addressService;
   }
 
   // curl "https://nominatim.openstreetmap.org/search?q=кубгу&format=json"
   // curl "http://localhost:8080/tests/search"
   @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Address> search(final @RequestParam String address) {
-    return addressService.search(address)
-            .map(p -> ResponseEntity.status(HttpStatus.OK).body(p))
+  public ResponseEntity<Address> search(final @RequestParam("q") String query) {
+    return addressService.search(query)
+            .map(place -> ResponseEntity.status(HttpStatus.OK).body(place))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
@@ -39,9 +39,10 @@ public class GeocoderController {
   // curl "https://nominatim.openstreetmap.org/reverse?lat=45.02036085&lon=39.03099994504268&format=json"
   // curl "http://localhost:8080/tests/reverse"
   @GetMapping(value = "/reverse", produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Address> reverse(final @RequestParam Double latitude, final @RequestParam Double longitude) {
+  public ResponseEntity<Address> reverse(final @RequestParam("lat") String latitude,
+                                         final @RequestParam("lon") String longitude) {
     return addressService.reverse(latitude, longitude)
-            .map(p -> ResponseEntity.status(HttpStatus.OK).body(p))
+            .map(place -> ResponseEntity.status(HttpStatus.OK).body(place))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 

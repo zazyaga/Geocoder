@@ -8,6 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+/**
+ * @author Anastasia Zozulya
+ */
+
 @Entity
 @SuppressWarnings("PMD.AvoidFieldName<atchingTypeName")
 public class Address {
@@ -17,6 +21,7 @@ public class Address {
   private String address;
   private Double latitude;
   private Double longitude;
+  private String query;
 
 
   public Integer getId() {
@@ -35,6 +40,9 @@ public class Address {
     return longitude;
   }
 
+  public String getQuery() { return query; }
+  public void setQuery(String query) { this.query = query; }
+
   public void setId(final Integer id) {
     this.id = id;
   }
@@ -51,36 +59,39 @@ public class Address {
     this.longitude = longitude;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == this) return true;
-    if (obj == null || obj.getClass() != this.getClass()) return false;
-    var that = (Address) obj;  //final Address вместо var
-    return Objects.equals(this.id, that.id) &&
-      Objects.equals(this.address, that.address) &&
-      Objects.equals(this.latitude, that.latitude) &&
-      Objects.equals(this.longitude, that.longitude);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address1 = (Address) o;
+        return Objects.equals(id, address1.id)
+            && Objects.equals(address, address1.address)
+            && Objects.equals(latitude, address1.latitude)
+            && Objects.equals(longitude, address1.longitude)
+            && Objects.equals(query, address1.query);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, address, latitude, longitude);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, address, latitude, longitude, query);
+    }
 
-  @Override
+    @Override
   public String toString() {
     return "Address[" +
-      "id=" + id + ", " +
-      "address=" + address + ", " +
-      "latitude=" + latitude + ", " +
-      "longitude=" + longitude + ']';
+        "id=" + id + ", " +
+        "address=" + address + ", " +
+        "latitude=" + latitude + ", " +
+        "longitude=" + longitude + ", " +
+        "query=" + query +  ']';
   }
 
-  public static Address of(final NominatimPlace place) {
+  public static Address of(final NominatimPlace place, final String query) {
     Address result = new Address();
-    result.setAddress(place.getDisplayName());
-    result.setLatitude(place.getLatitude());
-    result.setLongitude(place.getLongitude());
+    result.setAddress(place.displayName());
+    result.setLatitude(place.latitude());
+    result.setLongitude(place.longitude());
+    result.setQuery(query);
     return result;
   }
 }
