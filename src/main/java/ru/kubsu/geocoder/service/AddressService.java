@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class AddressService {
 
-    private static final String QUERY_FOR_REVERSE = null;
+  private static final String QUERY_FOR_REVERSE = null;
   private final NominatimClient nominatimClient;
   private final AddressRepository addressRepository;
 
@@ -26,15 +26,15 @@ public class AddressService {
     this.addressRepository = addressRepository;
   }
 
-  public Optional<Address> search(String query){
-    return addressRepository.findByAddress(query)
+  public Optional<Address> search(final String query) {
+    return addressRepository.findByQuery(query)
             .or(() -> nominatimClient.search(query)
                     .map(place -> addressRepository.save(Address.of(place, query))));
   }
 
 
-  public Optional<Address> reverse(final String latitude, final String longitude){
-      try{
+  public Optional<Address> reverse(final String latitude, final String longitude) {
+      try {
           final Double lat = Double.parseDouble(latitude);
           final Double lon = Double.parseDouble(longitude);
           return addressRepository

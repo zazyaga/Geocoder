@@ -2,8 +2,6 @@ package ru.kubsu.geocoder.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 /**
  * Адрес.
  *
@@ -13,7 +11,7 @@ import java.util.Objects;
  * @param type тип
  */
 
-public record NominatimPlace (
+public record NominatimPlace(
 
     @JsonProperty("lat")
     Double latitude,
@@ -24,6 +22,6 @@ public record NominatimPlace (
     @JsonProperty("type")
     String type) {
     public NominatimPlace() {
-        this(45.02036085, 39.03099994504268, "Кубанский государственный университет", "");
+        this(45.020_360_85, 39.030_999_945_042_68, "Кубанский государственный университет", "");
     }
 }

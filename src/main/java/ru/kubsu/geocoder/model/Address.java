@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 
 @Entity
-@SuppressWarnings("PMD.AvoidFieldName<atchingTypeName")
+@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Address {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,8 +40,12 @@ public class Address {
     return longitude;
   }
 
-  public String getQuery() { return query; }
-  public void setQuery(String query) { this.query = query; }
+  public String getQuery() {
+      return query;
+  }
+  public void setQuery(final String query) {
+      this.query = query;
+  }
 
   public void setId(final Integer id) {
     this.id = id;
@@ -60,10 +64,14 @@ public class Address {
   }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address1 = (Address) o;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Address address1 = (Address) o;
         return Objects.equals(id, address1.id)
             && Objects.equals(address, address1.address)
             && Objects.equals(latitude, address1.latitude)
@@ -78,16 +86,17 @@ public class Address {
 
     @Override
   public String toString() {
-    return "Address[" +
-        "id=" + id + ", " +
-        "address=" + address + ", " +
-        "latitude=" + latitude + ", " +
-        "longitude=" + longitude + ", " +
-        "query=" + query +  ']';
+    return "Address["
+        + "id=" + id
+        + ", " + "address=" + address
+        + ", " + "latitude=" + latitude
+        + ", " + "longitude=" + longitude
+        + ", " + "query=" + query
+        + ']';
   }
 
   public static Address of(final NominatimPlace place, final String query) {
-    Address result = new Address();
+    final Address result = new Address();
     result.setAddress(place.displayName());
     result.setLatitude(place.latitude());
     result.setLongitude(place.longitude());

@@ -23,7 +23,7 @@ import java.util.Optional;
 public interface NominatimClient {
     String JSON_FORMAT = "json";
     @RequestMapping(method = RequestMethod.GET, value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<NominatimPlace> search(@RequestParam(value = "q") String query,
+    List<NominatimPlace> search(@RequestParam("q") String query,
                                 @RequestParam(value = "format", defaultValue = "json") String format);
 
     /**
@@ -34,20 +34,20 @@ public interface NominatimClient {
      * @return Объект адреса.
      */
 
-//    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}", produces = "application/json")
-//    Post getPostById(@PathVariable("postId") Long postId);
+    //    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}", produces = "application/json")
+    //    Post getPostById(@PathVariable("postId") Long postId);
 
     default Optional<NominatimPlace> search(final String query) {
       try {
-          return Optional.of(search(query,JSON_FORMAT).get(0));
+          return Optional.of(search(query, JSON_FORMAT).get(0));
       } catch (Exception ex) {
           return Optional.empty();
       }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/reverse", produces = MediaType.APPLICATION_JSON_VALUE)
-    NominatimPlace reverse(@RequestParam(value = "lat") String latitude,
-                           @RequestParam(value = "lon") String longitude,
+    NominatimPlace reverse(@RequestParam("lat") String latitude,
+                           @RequestParam("lon") String longitude,
                            @RequestParam(value = "format", defaultValue = "json") String format);
 
     default Optional<NominatimPlace> reverse(final String latitude, final String longitude) {
