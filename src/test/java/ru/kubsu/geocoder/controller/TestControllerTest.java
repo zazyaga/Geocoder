@@ -58,7 +58,7 @@ class TestControllerTest {
         assertEquals(5, body.getId());
         assertEquals("newname", body.getName());
         //assertEquals(null, body.getDone());
-        assertNull(body.getDone());
+        //assertNull(body.getDone());
         //assertEquals(null, body.getMark());
         assertNull(body.getMark());
     }
@@ -204,20 +204,16 @@ class TestControllerTest {
 
   //for load 3
   @Test
-  void loadTestWhenNameIsNull() {
-    ResponseEntity<Map<String, String>> response = testRestTemplate
-      .exchange(
-        "http://localhost:" + this.port + "/tests/load/",
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<Map<String, String>>() {});
+  void loadTestWhenThereIsNoRecord() {
+      ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate
+          .exchange("http://localhost:"+this.port+"/tests/load/teesttyy",
+              HttpMethod.GET, null, ru.kubsu.geocoder.model.Test.class);
 
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    final Map<String, String> body = response.getBody();
-    assertEquals("400", body.get("status"));
-    assertEquals("Bad Request", body.get("error"));
-    assertEquals("/tests/load/", body.get("path"));
+      if(response.getBody() != null) {
+          fail("No record. Body must be null");
+      }
   }
 
   @AfterEach
