@@ -47,7 +47,7 @@ class TestControllerTest {
         //System.out.println("TEST 1 ");
 
         ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
-                getForEntity("http://localhost:" + port + "/tests/1?name=test",
+                getForEntity("http://localhost:" + port + "/tests/check/1?name=test",
                         ru.kubsu.geocoder.model.Test.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -68,7 +68,7 @@ class TestControllerTest {
     @Test
     void integrationTestWhenNameIsNull() {
         ResponseEntity<Map<String, String>> response = testRestTemplate
-                .exchange("http://localhost:" + port + "/tests/1",
+                .exchange("http://localhost:" + port + "/tests/check/1",
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<Map<String, String>>() {});
@@ -78,7 +78,7 @@ class TestControllerTest {
         final Map<String, String> body = response.getBody();
         assertEquals("400", body.get("status"));
         assertEquals("Bad Request", body.get("error"));
-        assertEquals("/tests/1", body.get("path"));
+        assertEquals("/tests/check/1", body.get("path"));
 
         //final String body = response.getBody();
 
@@ -89,7 +89,7 @@ class TestControllerTest {
     @Test
     void integrationTestWhenIdIsString() {
       ResponseEntity<Map<String, String>> response = testRestTemplate
-              .exchange("http://localhost:" + port + "/tests/abc?name=test",
+              .exchange("http://localhost:" + port + "/tests/check/abc?name=test",
                       HttpMethod.GET,
                       null,
                   new ParameterizedTypeReference<Map<String, String>>() {});
@@ -99,7 +99,7 @@ class TestControllerTest {
         final Map<String, String> body = response.getBody();
         assertEquals(400, body.get("status"));
         assertEquals("Bad Request", body.get("error"));
-        assertEquals("/tests/abc", body.get("path"));
+        assertEquals("/tests/check/abc", body.get("path"));
     }
 
   //example test for working with repository
@@ -107,7 +107,7 @@ class TestControllerTest {
   void ExampleTestWithRepository() {
     ResponseEntity<Void> response = testRestTemplate.
       getForEntity(
-        "http://localhost:" + port + "/tests/save?name=test",
+        "http://localhost:" + port + "/tests/saveTest?name=test",
         Void.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -119,7 +119,7 @@ class TestControllerTest {
   void saveTest() {
     ResponseEntity<Void> response = testRestTemplate.
       getForEntity(
-        "http://localhost:" + port + "/tests/save?name=666",
+        "http://localhost:" + port + "/tests/saveTest?name=666",
         Void.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -129,7 +129,7 @@ class TestControllerTest {
   @Test
   void saveTestWhenNameIsNull() {
     ResponseEntity<Map<String, String>> response = testRestTemplate
-      .exchange("http://localhost:" + port + "/tests/save",
+      .exchange("http://localhost:" + port + "/tests/saveTest",
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<Map<String, String>>() {});
@@ -139,7 +139,7 @@ class TestControllerTest {
     final Map<String, String> body = response.getBody();
     assertEquals("400", body.get("status"));
     assertEquals("Bad Request", body.get("error"));
-    assertEquals("/tests/save", body.get("path"));
+    assertEquals("/tests/saveTest", body.get("path"));
   }
 
 
