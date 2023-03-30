@@ -12,9 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.kubsu.geocoder.dto.RestApiError;
+import ru.kubsu.geocoder.model.Mark;
 import ru.kubsu.geocoder.repository.TestRepository;
 import ru.kubsu.geocoder.util.TestUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +31,7 @@ class TestControllerTest {
 
     @Autowired
     private TestRepository testRepository;
-    private TestRestTemplate testRestTemplate = new TestRestTemplate();
+    private final TestRestTemplate testRestTemplate = new TestRestTemplate();
 
     @BeforeAll
     static void beforeAll() {
@@ -47,7 +49,7 @@ class TestControllerTest {
         //System.out.println("TEST 1 ");
 
         ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
-                getForEntity("http://localhost:" + port + "/tests/check/1?name=test",
+                getForEntity("http://localhost:" + this.port + "/tests/check/1?name=test",
                         ru.kubsu.geocoder.model.Test.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -67,18 +69,30 @@ class TestControllerTest {
   //for build 2
     @Test
     void integrationTestWhenNameIsNull() {
-        ResponseEntity<Map<String, String>> response = testRestTemplate
-                .exchange("http://localhost:" + port + "/tests/check/1",
+        ResponseEntity<HashMap<String, String>> response = testRestTemplate
+                .exchange("http://localhost:" + this.port + "/tests/check/1",
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<Map<String, String>>() {});
+                    new ParameterizedTypeReference<HashMap<String, String>>() {});
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        final Map<String, String> body = response.getBody();
-        assertEquals("400", body.get("status"));
-        assertEquals("Bad Request", body.get("error"));
+        final HashMap<String, String> body = response.getBody();
+        if(body == null) {
+            fail("Body is null");
+        }
         assertEquals("/tests/check/1", body.get("path"));
+        body.remove("path");
+
+        assertEquals("Bad Request", body.get("error"));
+        body.remove("error");
+
+        assertEquals("400", body.get("status"));
+        body.remove("status");
+
+        body.remove("timestamp");
+        //assertEquals(true, body.isEmpty());
+        assertTrue(body.isEmpty());
 
         //final String body = response.getBody();
 
@@ -88,18 +102,22 @@ class TestControllerTest {
   //for build 3
     @Test
     void integrationTestWhenIdIsString() {
-      ResponseEntity<Map<String, String>> response = testRestTemplate
-              .exchange("http://localhost:" + port + "/tests/check/abc?name=test",
+      ResponseEntity<RestApiError> response = testRestTemplate
+              .exchange("http://localhost:" + this.port + "/tests/check/abc?name=test",
                       HttpMethod.GET,
                       null,
-                  new ParameterizedTypeReference<Map<String, String>>() {});
+                      RestApiError.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        final Map<String, String> body = response.getBody();
-        assertEquals(400, body.get("status"));
-        assertEquals("Bad Request", body.get("error"));
-        assertEquals("/tests/check/abc", body.get("path"));
+        final RestApiError body = response.getBody();
+        if(body == null) {
+            fail("Body is null");
+        }
+
+        assertEquals("/tests/check/test", body.path());
+        assertEquals("Bad Request", body.error());
+        assertEquals(400, body.status());
     }
 
   //example test for working with repository
@@ -129,7 +147,7 @@ class TestControllerTest {
   @Test
   void saveTestWhenNameIsNull() {
     ResponseEntity<Map<String, String>> response = testRestTemplate
-      .exchange("http://localhost:" + port + "/tests/saveTest",
+      .exchange("http://localhost:" + this.port + "/tests/saveTest",
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<Map<String, String>>() {});
@@ -146,20 +164,27 @@ class TestControllerTest {
   //for load 1
   @Test
   void loadTest() {
-    ru.kubsu.geocoder.model.Test test = new ru.kubsu.geocoder.model.Test();
-    test.setName("megaololo");
-    testRepository.save(test);
-    Integer id = test.getId();
+      ru.kubsu.geocoder.model.Test test =  new ru.kubsu.geocoder.model.Test();
+      String nameTest = "newtest111";
+      test.setName(nameTest);
+      test.setDone(true);
+      test.setMark(Mark.B);
+      testRepository.save(test);
 
-    ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
-      getForEntity("http://localhost:" + port + "/tests/load/megaololo",
-        ru.kubsu.geocoder.model.Test.class);
+      ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate
+          .exchange("http://localhost:"+this.port+"/tests/load/"+nameTest,
+              HttpMethod.GET, null, ru.kubsu.geocoder.model.Test.class);
 
-    final ru.kubsu.geocoder.model.Test body = response.getBody();
-    assertEquals(id, body.getId());
-    assertEquals("megaololo", body.getName());
-    assertEquals(null, body.getDone());
-    assertEquals(null, body.getMark());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+
+      final ru.kubsu.geocoder.model.Test body = response.getBody();
+      if(body == null) {
+          fail("Body is null");
+      }
+
+      assertEquals(nameTest, body.getName());
+      assertTrue(body.getDone());
+      assertEquals(Mark.B, body.getMark());
   }
 
 
@@ -169,7 +194,7 @@ class TestControllerTest {
 
     ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
       getForEntity(
-        "http://localhost:" + port + "/tests/load/NOTmegaololo",
+        "http://localhost:" + this.port + "/tests/load/NOTmegaololo",
         ru.kubsu.geocoder.model.Test.class);
 
     assertEquals(null, response.getBody());
@@ -195,7 +220,7 @@ class TestControllerTest {
   void loadTestWhenNameIsNull() {
     ResponseEntity<Map<String, String>> response = testRestTemplate
       .exchange(
-        "http://localhost:" + port + "/tests/load/",
+        "http://localhost:" + this.port + "/tests/load/",
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<Map<String, String>>() {});
