@@ -46,38 +46,32 @@ class TestControllerTest {
     //for build 1
     @Test
     void integrationTest() {
-        //System.out.println("TEST 1 ");
-
-        ResponseEntity<ru.kubsu.geocoder.model.Test> response = testRestTemplate.
-                getForEntity("http://localhost:" + this.port + "/tests/check/1?name=test",
-                        ru.kubsu.geocoder.model.Test.class);
+        ResponseEntity<ru.kubsu.geocoder.model.Test> response =
+            testRestTemplate.getForEntity("http://localhost:"+
+                this.port+"/tests/check/5?name=newname",ru.kubsu.geocoder.model.Test.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         final ru.kubsu.geocoder.model.Test body = response.getBody();
-        if (body == null) {
+        if(body == null) {
             fail("Body is null");
         }
-        assertEquals(1, body.getId());
-        assertEquals("test", body.getName());
+        assertEquals(5, body.getId());
+        assertEquals("newname", body.getName());
+        //assertEquals(null, body.getDone());
         assertNull(body.getDone());
+        //assertEquals(null, body.getMark());
         assertNull(body.getMark());
-
-        //assertEquals("{\"id\":1,\"name\":\"test\",\"done\":null,\"mark\":null}", body);
-        //System.out.println(response.getBody());
     }
 
-  //for build 2
     @Test
-    void integrationTestWhenNameIsNull() {
+    void integrationTestWhenNameIsNull() { //Negative Test
         ResponseEntity<HashMap<String, String>> response = testRestTemplate
-                .exchange("http://localhost:" + this.port + "/tests/check/1",
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<HashMap<String, String>>() {});
-
+            .exchange("http://localhost:" + this.port + "/tests/check/1", HttpMethod.GET, null,
+                new ParameterizedTypeReference<HashMap<String, String>>() {});
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         final HashMap<String, String> body = response.getBody();
+        System.out.println(body);
         if(body == null) {
             fail("Body is null");
         }
@@ -93,29 +87,22 @@ class TestControllerTest {
         body.remove("timestamp");
         //assertEquals(true, body.isEmpty());
         assertTrue(body.isEmpty());
-
-        //final String body = response.getBody();
-
-        //System.out.println(body);
     }
 
-  //for build 3
     @Test
-    void integrationTestWhenIdIsString() {
-      ResponseEntity<RestApiError> response = testRestTemplate
-              .exchange("http://localhost:" + this.port + "/tests/check/abc?name=test",
-                      HttpMethod.GET,
-                      null,
-                      RestApiError.class);
-
+    void integrationTestWhenIdIsString() { //Negative Test
+        ResponseEntity<RestApiError> response = testRestTemplate
+            .exchange("http://localhost:" + this.port + "/tests/check/str?name=test",
+                HttpMethod.GET, null, RestApiError.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         final RestApiError body = response.getBody();
+        System.out.println(body);
         if(body == null) {
             fail("Body is null");
         }
 
-        assertEquals("/tests/check/test", body.path());
+        assertEquals("/tests/check/str", body.path());
         assertEquals("Bad Request", body.error());
         assertEquals(400, body.status());
     }
