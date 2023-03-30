@@ -23,6 +23,7 @@ dependencies {
   implementation 'org.postgresql:postgresql:42.6.0'
 
   //implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+    testImplementation("com.h2database:h2:2.1.214")
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
